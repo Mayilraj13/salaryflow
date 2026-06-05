@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/database/dao/all_daos.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../dashboard/presentation/providers/dashboard_provider.dart';
+import '../../../analytics/presentation/providers/analytics_provider.dart';
 
 /// Represents the state of income-related operations.
 class IncomeState {
@@ -168,6 +169,8 @@ class IncomeNotifier extends StateNotifier<IncomeState> {
 
   void _invalidateDashboard() {
     _ref.invalidate(dashboardProvider);
+    _ref.invalidate(cycleReportProvider);
+    _ref.invalidate(pastCyclesProvider);
   }
 }
 

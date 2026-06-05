@@ -4,6 +4,7 @@ import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/income/presentation/screens/income_screen.dart';
 import '../../features/expenses/presentation/screens/expense_screen.dart';
 import '../../features/savings/presentation/screens/savings_screen.dart';
+import '../../features/reports/presentation/screens/reports_screen.dart';
 import '../constants/app_constants.dart';
 
 /// Main navigation shell with BottomNavigationBar and IndexedStack.
@@ -23,6 +24,7 @@ class _AppNavShellState extends ConsumerState<AppNavShell> {
     IncomeScreen(),
     ExpenseScreen(),
     SavingsScreen(),
+    ReportsScreen(),
   ];
 
   @override
@@ -57,6 +59,11 @@ class _AppNavShellState extends ConsumerState<AppNavShell> {
             icon: Icon(Icons.savings_outlined),
             selectedIcon: Icon(Icons.savings),
             label: AppStrings.navSavings,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.bar_chart_outlined),
+            selectedIcon: Icon(Icons.bar_chart),
+            label: AppStrings.navReports,
           ),
         ],
       ),

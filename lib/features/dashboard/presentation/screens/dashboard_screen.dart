@@ -6,6 +6,7 @@ import '../widgets/stats_row.dart';
 import '../widgets/quick_stats.dart';
 import '../widgets/quick_expense_grid.dart';
 import '../../../expenses/presentation/widgets/quick_expense_dialog.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../../../core/constants/app_constants.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -34,6 +35,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       builder: (_) => QuickExpenseDialog(
         category: category,
         label: label,
+      ),
+    );
+  }
+
+  void _editSalaryDate() {
+    // Make sure settings are loaded, or load them
+    final settingsState = ref.read(settingsProvider);
+    showDialog(
+      context: context,
+      builder: (ctx) => _DayPickerDialog(
+        title: 'Edit Salary Date',
+        currentDay: settingsState.salaryDate,
+        onSelected: (day) {
+          ref.read(settingsProvider.notifier).setSalaryDate(day);
+        },
       ),
     );
   }
@@ -116,6 +132,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           QuickStats(
             daysUntilSalary: state.daysUntilSalary,
             todaySafeSpend: state.todaySafeSpend,
+            onDaysUntilSalaryTap: _editSalaryDate,
           ),
           const SizedBox(height: 8),
           // Quick Expense Grid
@@ -160,6 +177,95 @@ class _DashboardShimmer extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+}
+
+/// A dialog that shows a list of day numbers 1-31 for selection.
+class _DayPickerDialog extends StatefulWidget {
+  final String title;
+  final int currentDay;
+  final ValueChanged<int> onSelected;
+
+  const _DayPickerDialog({
+    required this.title,
+    required this.currentDay,
+    required this.onSelected,
+  });
+
+  @override
+  State<_DayPickerDialog> createState() => _DayPickerDialogState();
+}
+
+class _DayPickerDialogState extends State<_DayPickerDialog> {
+  late int _selectedDay;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = widget.currentDay;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.title),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: GridView.builder(
+          shrinkWrap: true,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 7,
+            mainAxisSpacing: 4,
+            crossAxisSpacing: 4,
+          ),
+          itemCount: 31,
+          itemBuilder: (context, index) {
+            final day = index + 1;
+            final isSelected = day == _selectedDay;
+            return GestureDetector(
+              onTap: () => setState(() => _selectedDay = day),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : null,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.primary
+                        : Colors.grey.shade300,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    '$day',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
+                      color: isSelected ? Colors.white : null,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () {
+            widget.onSelected(_selectedDay);
+            Navigator.pop(context);
+          },
+          child: const Text('Save'),
+        ),
+      ],
     );
   }
 }

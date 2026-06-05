@@ -7,12 +7,14 @@ class ExpenseCard extends StatelessWidget {
   final ExpenseRecord expense;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
+  final EdgeInsetsGeometry? margin;
 
   const ExpenseCard({
     super.key,
     required this.expense,
     this.onEdit,
     this.onDelete,
+    this.margin,
   });
 
   @override
@@ -22,7 +24,7 @@ class ExpenseCard extends StatelessWidget {
     final categoryIcon = AppTheme.categoryIcons[expense.category] ?? Icons.more_horiz;
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      margin: margin ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: InkWell(
         onTap: onEdit,
         borderRadius: BorderRadius.circular(16),
