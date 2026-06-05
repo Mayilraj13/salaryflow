@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/database/dao/all_daos.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../dashboard/presentation/providers/dashboard_provider.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
+
 
 /// Represents the state of rent-related operations.
 class RentState {
@@ -121,6 +123,49 @@ class RentNotifier extends StateNotifier<RentState> {
       );
 
       await _dao.update(companion);
+      await load();
+      _invalidateDashboard();
+      return true;
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+      return false;
+    }
+  }
+
+  /// Update current month's rent amount and/or due day.
+  Future<bool> updateCurrentRent({double? amount, int? dueDay}) async {
+    try {
+      RentRecord? current = state.currentMonth;
+      if (current == null) {
+        current = await _autoCreateCurrentMonth();
+      }
+
+      final newAmount = amount ?? current.amount;
+      final newDueDay = dueDay ?? current.dueDate.day;
+      final newDueDate = DateTime(current.year, current.month, newDueDay);
+
+      final companion = RentRecordsCompanion(
+        id: Value(current.id),
+        amount: Value(newAmount),
+        dueDate: Value(newDueDate),
+        month: Value(current.month),
+        year: Value(current.year),
+        isPaid: Value(current.isPaid),
+        paidDate: Value(current.paidDate),
+        notes: Value(current.notes),
+        landlordNotes: Value(current.landlordNotes),
+      );
+
+      await _dao.update(companion);
+      
+      if (amount != null) {
+        await _settingsDao.set('rent_amount', amount.toString());
+      }
+      if (dueDay != null) {
+        await _settingsDao.set('rent_due_day', dueDay.toString());
+      }
+      
+      _ref.invalidate(settingsProvider);
       await load();
       _invalidateDashboard();
       return true;

@@ -6,18 +6,16 @@ import '../../../../core/constants/app_constants.dart';
 
 class BalanceCard extends ConsumerWidget {
   final double balance;
-  final double healthScore;
 
   const BalanceCard({
     super.key,
     required this.balance,
-    required this.healthScore,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final healthColor = AppTheme.getHealthScoreColor(healthScore);
     final theme = Theme.of(context);
+    final primaryColor = AppTheme.primaryColor;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -27,14 +25,14 @@ class BalanceCard extends ConsumerWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            healthColor.withValues(alpha: 0.8),
-            healthColor.withValues(alpha: 0.4),
+            primaryColor.withValues(alpha: 0.8),
+            primaryColor.withValues(alpha: 0.4),
             theme.colorScheme.surface.withValues(alpha: 0.9),
           ],
         ),
         boxShadow: [
           BoxShadow(
-            color: healthColor.withValues(alpha: 0.3),
+            color: primaryColor.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -51,41 +49,12 @@ class BalanceCard extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      AppStrings.currentBalance,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: healthColor.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            AppTheme.getHealthScoreEmoji(healthScore),
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${healthScore.toStringAsFixed(0)}%',
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              color: healthColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                Text(
+                  AppStrings.currentBalance,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 AnimatedSlide(
@@ -102,14 +71,6 @@ class BalanceCard extends ConsumerWidget {
                         fontSize: 36,
                       ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  AppTheme.getHealthScoreLabel(healthScore),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: healthColor,
-                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],

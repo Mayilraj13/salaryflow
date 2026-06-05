@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/income/presentation/screens/income_screen.dart';
 import '../../features/expenses/presentation/screens/expense_screen.dart';
-import '../../features/rent/presentation/screens/rent_screen.dart';
 import '../../features/savings/presentation/screens/savings_screen.dart';
 import '../constants/app_constants.dart';
 
@@ -23,7 +22,6 @@ class _AppNavShellState extends ConsumerState<AppNavShell> {
     DashboardScreen(),
     IncomeScreen(),
     ExpenseScreen(),
-    RentScreen(),
     SavingsScreen(),
   ];
 
@@ -54,11 +52,6 @@ class _AppNavShellState extends ConsumerState<AppNavShell> {
             icon: Icon(Icons.arrow_upward_outlined),
             selectedIcon: Icon(Icons.arrow_upward),
             label: AppStrings.navExpenses,
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.home_repair_service_outlined),
-            selectedIcon: Icon(Icons.home_repair_service),
-            label: AppStrings.navRent,
           ),
           NavigationDestination(
             icon: Icon(Icons.savings_outlined),

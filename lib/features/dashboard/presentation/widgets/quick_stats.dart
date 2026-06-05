@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/formatters.dart';
-import '../../../../core/constants/app_constants.dart';
-import '../providers/dashboard_provider.dart' show RentStatus;
 
 class QuickStats extends StatelessWidget {
   final int daysUntilSalary;
   final double todaySafeSpend;
-  final RentStatus rentStatus;
-  final double healthScore;
 
   const QuickStats({
     super.key,
     required this.daysUntilSalary,
     required this.todaySafeSpend,
-    required this.rentStatus,
-    required this.healthScore,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final healthColor = AppTheme.getHealthScoreColor(healthScore);
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Column(
@@ -46,92 +37,9 @@ class QuickStats extends StatelessWidget {
               )),
             ],
           ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(child: _QuickStatTile(
-                icon: Icons.home_repair_service,
-                label: 'Rent Status',
-                value: _rentStatusLabel(rentStatus),
-                color: _rentStatusColor(rentStatus),
-              )),
-              const Expanded(child: SizedBox()),
-              const SizedBox(width: 8),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: healthColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: healthColor.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  AppTheme.getHealthScoreEmoji(healthScore),
-                  style: const TextStyle(fontSize: 24),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Financial Health',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        AppTheme.getHealthScoreLabel(healthScore),
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: healthColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Text(
-                  '${healthScore.toStringAsFixed(0)}%',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: healthColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
-  }
-
-  String _rentStatusLabel(RentStatus status) {
-    switch (status) {
-      case RentStatus.paid:
-        return 'Paid ✓';
-      case RentStatus.pending:
-        return 'Pending';
-      case RentStatus.overdue:
-        return 'Overdue!';
-    }
-  }
-
-  Color _rentStatusColor(RentStatus status) {
-    switch (status) {
-      case RentStatus.paid:
-        return AppTheme.successColor;
-      case RentStatus.pending:
-        return AppTheme.warningColor;
-      case RentStatus.overdue:
-        return AppTheme.errorColor;
-    }
   }
 }
 

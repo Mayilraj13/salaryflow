@@ -1,6 +1,11 @@
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/database/app_database.dart';
 import '../../../../core/database/dao/all_daos.dart';
 import '../../../dashboard/presentation/providers/dashboard_provider.dart';
+import '../../../rent/presentation/providers/rent_provider.dart';
+
+
 
 /// Represents the app settings state.
 class SettingsState {
@@ -286,7 +291,19 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     try {
       await _dao.set('rent_amount', amount.toString());
       state = state.copyWith(rentAmount: amount);
+      
+      final rentDao = RentDao(_ref.read(appDatabaseProvider));
+      final currentRent = await rentDao.getCurrentMonth();
+      if (currentRent != null && !currentRent.isPaid) {
+        final companion = RentRecordsCompanion(
+          id: Value(currentRent.id),
+          amount: Value(amount),
+        );
+        await rentDao.update(companion);
+      }
+
       _invalidateDashboard();
+      _ref.invalidate(rentProvider);
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }
@@ -297,7 +314,20 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     try {
       await _dao.set('rent_due_day', day.toString());
       state = state.copyWith(rentDueDay: day);
+
+      final rentDao = RentDao(_ref.read(appDatabaseProvider));
+      final currentRent = await rentDao.getCurrentMonth();
+      if (currentRent != null && !currentRent.isPaid) {
+        final newDueDate = DateTime(currentRent.year, currentRent.month, day);
+        final companion = RentRecordsCompanion(
+          id: Value(currentRent.id),
+          dueDate: Value(newDueDate),
+        );
+        await rentDao.update(companion);
+      }
+
       _invalidateDashboard();
+      _ref.invalidate(rentProvider);
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }

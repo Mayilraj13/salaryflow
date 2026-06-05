@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/constants/app_constants.dart';
 
 /// Quick-add expense categories shown on the dashboard.
 class QuickExpenseGrid extends StatelessWidget {
@@ -16,6 +15,9 @@ class QuickExpenseGrid extends StatelessWidget {
     ('Travel', Icons.directions_bus, 'Travel'),
     ('Tea', Icons.local_cafe, 'Tea'),
     ('Shopping', Icons.shopping_bag, 'Shopping'),
+    ('Entertainment', Icons.movie, 'Entertain'),
+    ('Medical', Icons.medical_services, 'Medical'),
+    ('Internet', Icons.wifi, 'Internet'),
     ('Others', Icons.more_horiz, 'Others'),
   ];
 
@@ -23,12 +25,12 @@ class QuickExpenseGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 8),
+            padding: const EdgeInsets.only(left: 4, bottom: 12),
             child: Text(
               'Quick Add Expense',
               style: theme.textTheme.titleSmall?.copyWith(
@@ -37,22 +39,23 @@ class QuickExpenseGrid extends StatelessWidget {
               ),
             ),
           ),
-          Row(
+          GridView.count(
+            crossAxisCount: 4,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            childAspectRatio: 1.05,
             children: _quickCategories.map((item) {
               final category = item.$1;
               final icon = item.$2;
               final label = item.$3;
               final color = AppTheme.categoryColors[category] ?? AppTheme.categoryColors['Others']!;
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 3),
-                  child: _QuickAddButton(
-                    icon: icon,
-                    label: label,
-                    color: color,
-                    onTap: () => onQuickAdd(category, label),
-                  ),
-                ),
+              return _QuickAddButton(
+                icon: icon,
+                label: label,
+                color: color,
+                onTap: () => onQuickAdd(category, label),
               );
             }).toList(),
           ),

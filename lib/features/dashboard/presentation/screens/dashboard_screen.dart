@@ -5,7 +5,6 @@ import '../widgets/balance_card.dart';
 import '../widgets/stats_row.dart';
 import '../widgets/quick_stats.dart';
 import '../widgets/quick_expense_grid.dart';
-import '../../../expenses/presentation/providers/expense_provider.dart';
 import '../../../expenses/presentation/widgets/quick_expense_dialog.dart';
 import '../../../../core/constants/app_constants.dart';
 
@@ -96,9 +95,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       );
     }
 
-    final health = state.financialHealth;
-    final healthScore = health?.score ?? 0;
-
     return RefreshIndicator(
       onRefresh: _onRefresh,
       child: ListView(
@@ -108,7 +104,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           // Balance Card
           BalanceCard(
             balance: state.currentBalance,
-            healthScore: healthScore,
           ),
           const SizedBox(height: 8),
           // Stats Row
@@ -118,12 +113,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             savings: state.totalSavings,
           ),
           const SizedBox(height: 8),
-          // Quick Stats
           QuickStats(
             daysUntilSalary: state.daysUntilSalary,
             todaySafeSpend: state.todaySafeSpend,
-            rentStatus: state.rentStatus,
-            healthScore: healthScore,
           ),
           const SizedBox(height: 8),
           // Quick Expense Grid
